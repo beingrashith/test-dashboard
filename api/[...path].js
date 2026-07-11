@@ -3,6 +3,9 @@ export default async function handler(req, res) {
 
   const targetUrl = `https://admin-moderator-backend-staging.up.railway.app/api/${path.join("/")}`;
 
+  console.log("Incoming path:", path);
+  console.log("Target URL:", targetUrl);
+
   try {
     const response = await fetch(targetUrl, {
       method: req.method,
@@ -20,17 +23,12 @@ export default async function handler(req, res) {
 
     const text = await response.text();
 
-    res.status(response.status);
+    console.log("Status:", response.status);
+    console.log("Response:", text);
 
-    // Forward response as JSON if possible
-    try {
-      res.json(JSON.parse(text));
-    } catch {
-      res.send(text);
-    }
+    res.status(response.status).send(text);
   } catch (err) {
-    res.status(500).json({
-      error: err.message,
-    });
+    console.error(err);
+    res.status(500).json({ error: err.message });
   }
 }
